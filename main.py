@@ -3,14 +3,21 @@ import os
 import pygame
 import random
 
+def closeDown():
+    global root
+    root.destroy()
+    os.system('clear')
+    exit(0)
+
 def back():
     global songIdx
     global songs
     global backSong
-
     songIdx -= 2
     songIdx %= len(songs)
     backSong = True
+    if loop:
+        loopToggle()
 
 def pauseToggle():
     global paused
@@ -23,14 +30,21 @@ def pauseToggle():
 
 def next():
     global nextSong
-
     nextSong = True
+    if loop:
+        loopToggle()
 
 def loopToggle():
-    pass
+    global loop
+    loop = not loop
+    loopBtn.config(image=loopImgs[int(loop)])
 
 def closeToggle():
-    pass
+    global toClose
+    global closeImgs
+
+    toClose = not toClose
+    closeAfter.config(image=closeImgs[int(toClose)])
 
 
 root = tk.Tk()
@@ -60,10 +74,12 @@ nextSong = False
 loopImgs = [tk.PhotoImage(file="images/loop.png"), tk.PhotoImage(file="images/unloop.png")]
 loopBtn = tk.Button(frame, image=loopImgs[0], command=loopToggle)
 loopBtn.place(x=0, y=10)
+loop = False
 
 closeImgs = [tk.PhotoImage(file="images/close.png"), tk.PhotoImage(file="images/unclose.png")]
 closeAfter = tk.Button(frame, image=closeImgs[0], command=closeToggle)
 closeAfter.place(x=275, y=10)
+toClose = False
 
 def playSong(song):
     pygame.mixer.music.set_volume(0.2)
@@ -102,10 +118,13 @@ while True:
             root.title(song.split(sep="/")[-1][:-4])
         except:
             exit(0)
-        root.protocol("WM_DELETE_WINDOW", closeToggle)
+        root.protocol("WM_DELETE_WINDOW", closeDown)
         root.update()
 
-    songIdx += 1
-    if songIdx == len(songs):
-        random.shuffle(songs)
-        songIdx = 0
+    if toClose:
+        closeDown()
+    elif not loop:
+        songIdx += 1
+        if songIdx == len(songs):
+            random.shuffle(songs)
+            songIdx = 0
