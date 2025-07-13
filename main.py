@@ -46,10 +46,12 @@ def closeToggle():
     toClose = not toClose
     closeAfter.config(image=closeImgs[int(toClose)])
 
+def changeVolume(volume):
+    pygame.mixer.music.set_volume(int(volume)/100)
 
 root = tk.Tk()
 root.title("       Media Controls")
-root.geometry("350x79")
+root.geometry("450x100")
 root.eval('tk::PlaceWindow . center')
 root.attributes('-topmost', True)
 
@@ -80,6 +82,9 @@ closeImgs = [tk.PhotoImage(file="images/close.png"), tk.PhotoImage(file="images/
 closeAfter = tk.Button(frame, image=closeImgs[0], command=closeToggle)
 closeAfter.place(x=275, y=10)
 toClose = False
+
+volumeSlider = tk.Scale(root, orient='vertical', from_=0, to=100, length=80, command=changeVolume)
+volumeSlider.place(x=380, y=5)
 
 def playSong(song):
     pygame.mixer.music.set_volume(0.2)
