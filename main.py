@@ -58,27 +58,27 @@ root.attributes('-topmost', True)
 frame = tk.Frame(root, bd=0, width=306, height=60)
 frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-backImg = tk.PhotoImage(file="images/back.png")
+backImg = tk.PhotoImage(file=os.path.join("images", "back.png"))
 backBtn = tk.Button(frame, image=backImg, command=back)
 backBtn.place(x=100, y=34)
 backSong = False
 
-pauseImgs = [tk.PhotoImage(file="images/pause.png"), tk.PhotoImage(file="images/unpause.png")]
+pauseImgs = [tk.PhotoImage(file=os.path.join("images", "pause.png")), tk.PhotoImage(file=os.path.join("images", "unpause.png"))]
 pauseBtn = tk.Button(frame, image=pauseImgs[0], command=pauseToggle)
 pauseBtn.place(x=148, y=30)
 paused = False
 
-nextImg = tk.PhotoImage(file="images/next.png")
+nextImg = tk.PhotoImage(file=os.path.join("images", "next.png"))
 nextBtn = tk.Button(frame, image=nextImg, command=next)
 nextBtn.place(x=183, y=34)
 nextSong = False
 
-loopImgs = [tk.PhotoImage(file="images/loop.png"), tk.PhotoImage(file="images/unloop.png")]
+loopImgs = [tk.PhotoImage(file=os.path.join("images", "loop.png")), tk.PhotoImage(file=os.path.join("images", "unloop.png"))]
 loopBtn = tk.Button(frame, image=loopImgs[0], command=loopToggle)
 loopBtn.place(x=0, y=10)
 loop = False
 
-closeImgs = [tk.PhotoImage(file="images/close.png"), tk.PhotoImage(file="images/unclose.png")]
+closeImgs = [tk.PhotoImage(file=os.path.join("images", "close.png")), tk.PhotoImage(file=os.path.join("images", "unclose.png"))]
 closeAfter = tk.Button(frame, image=closeImgs[0], command=closeToggle)
 closeAfter.place(x=275, y=10)
 toClose = False
@@ -88,11 +88,10 @@ volumeSlider.place(x=380, y=5)
 
 def playSong(song):
     pygame.mixer.music.set_volume(0.2)
-    print(f"Now playing: {song.split(sep="/")[-1][:-4]}")
     pygame.mixer.music.load(song)
     pygame.mixer.music.play()
 
-folderPath = "songs/"
+folderPath = "songs"
 songIdx = 0
 songs = []
 def getSongs(folder):
@@ -100,9 +99,9 @@ def getSongs(folder):
     for f in os.listdir(folder):
         if f[0] != '.':
             if f.endswith('.mp3'):
-                songs.append(folder+f)
+                songs.append(os.path.join(folder, f))
             else:
-                getSongs(folder+f+'/')
+                getSongs(os.path.join(folder, f))
 getSongs(folderPath)
 
 random.shuffle(songs)
@@ -120,9 +119,9 @@ while True:
             break
         
         try:
-            root.title(song.split(sep="/")[-1][:-4])
+            root.title(os.path.basename(os.path.normpath(song)))
         except:
-            exit(0)
+            pass
         root.protocol("WM_DELETE_WINDOW", closeDown)
         root.update()
 
